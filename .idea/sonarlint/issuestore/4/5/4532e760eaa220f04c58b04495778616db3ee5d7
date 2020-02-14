@@ -1,0 +1,16 @@
+
+|squid:S00116ç"cRename this field "GRID_VIEW_SCALING_FACTOR" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ªîÈ‘
+esquid:MaximumInheritanceDepth"<This class has 6 parents which is greater than 5 authorized.(∑‰Ü≈
+@squid:S1659è"(Declare "gridHeight" on a separate line.(ÕàÓ∂
+9squid:S1170ç"!Make this final field static too.(ªîÈ‘
+Qsquid:S1161¢":Add the "@Override" annotation above this method signature(ÇÕ∂|
+Wsquid:S1161À":Add the "@Override" annotation above this method signature(‘÷≥‰ˇˇˇˇˇ
+nsquid:S00116"VRename this field "STEP_PREFIX" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ôı£÷
+<squid:S1659ê"$Declare "yScale" on a separate line.(ƒ≥®‚
+ysquid:S00116"\Rename this field "POPULATION_PREFIX" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(çÅ©¢˛ˇˇˇˇ
+Dsquid:S1659"(Declare "population" on a separate line.(¨°Ûı˝ˇˇˇˇ
+@squid:S1948í"#Make "g" transient or serializable.(ÂËãÓ¸ˇˇˇˇ
+Isquid:S1948ì",Make "fieldImage" transient or serializable.(÷¢µŸ¯ˇˇˇˇ
+=squid:S1170"!Make this final field static too.(çÅ©¢˛ˇˇˇˇ
+8squid:S1170"!Make this final field static too.(ôı£÷
+Jsquid:S1948#"'Make "stats" transient or serializable.(˝Õ§Ò˙ˇˇˇˇ8∂ç¿√É.

@@ -4,41 +4,39 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * A simple model of a rabbit.
- * Rabbits age, move, breed, and die.
- * 
- * @author David J. Barnes and Michael Kölling
- * @version 2016.02.29 (2)
+ * A simple model of a squirrel.
+ * squirrel age, move, breed, and die.
+ *
  */
-public class Rabbit extends Animal
+public class Squirrel extends Animal
 {
-    // Characteristics shared by all rabbits (class variables).
+    // Characteristics shared by all squirrels (class variables).
 
-    // The age at which a rabbit can start to breed.
-    private static final int BREEDING_AGE = 5;
-    // The age to which a rabbit can live.
+    // The age at which a squirrel can start to breed.
+    private static final int BREEDING_AGE = 1;
+    // The age to which a squirrel can live.
     private static final int MAX_AGE = 40;
-    // The likelihood of a rabbit breeding.
+    // The likelihood of a squirrel breeding.
     private static final double BREEDING_PROBABILITY = 0.12;
     // The maximum number of births.
-    private static final int MAX_LITTER_SIZE = 4;
+    private static final int MAX_LITTER_SIZE = 7;
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
     
     // Individual characteristics (instance fields).
     
-    // The rabbit's age.
+    // The squirrel's age.
     private int age;
 
     /**
-     * Create a new rabbit. A rabbit may be created with age
+     * Create a new squirrel. A squirrel may be created with age
      * zero (a new born) or with a random age.
      * 
-     * @param randomAge If true, the rabbit will have a random age.
+     * @param randomAge If true, the squirrel will have a random age.
      * @param field The field currently occupied.
      * @param location The location within the field.
      */
-    public Rabbit(boolean randomAge, Field field, Location location)
+    public Squirrel(boolean randomAge, Field field, Location location)
     {
         super(field, location);
         age = 0;
@@ -48,15 +46,15 @@ public class Rabbit extends Animal
     }
     
     /**
-     * This is what the rabbit does most of the time - it runs 
+     * This is what the squirrel does most of the time - it runs
      * around. Sometimes it will breed or die of old age.
-     * @param newRabbits A list to return newly born rabbits.
+     * @param newSquirrel A list to return newly born squirrels.
      */
-    public void act(List<Animal> newRabbits)
+    public void act(List<Animal> newSquirrel)
     {
         incrementAge();
         if(isAlive()) {
-            giveBirth(newRabbits);            
+            giveBirth(newSquirrel);
             // Try to move into a free location.
             Location newLocation = getField().freeAdjacentLocation(getLocation());
             if(newLocation != null) {
@@ -71,7 +69,7 @@ public class Rabbit extends Animal
 
     /**
      * Increase the age.
-     * This could result in the rabbit's death.
+     * This could result in the squirrel's death.
      */
     private void incrementAge()
     {
@@ -82,21 +80,21 @@ public class Rabbit extends Animal
     }
     
     /**
-     * Check whether or not this rabbit is to give birth at this step.
+     * Check whether or not this squirrel is to give birth at this step.
      * New births will be made into free adjacent locations.
-     * @param newRabbits A list to return newly born rabbits.
+     * @param newSquirrel A list to return newly born squirrels.
      */
-    private void giveBirth(List<Animal> newRabbits)
+    private void giveBirth(List<Animal> newSquirrel)
     {
-        // New rabbits are born into adjacent locations.
+        // New squirrel are born into adjacent locations.
         // Get a list of adjacent free locations.
         Field field = getField();
         List<Location> free = field.getFreeAdjacentLocations(getLocation());
         int births = breed();
         for(int b = 0; b < births && free.size() > 0; b++) {
             Location loc = free.remove(0);
-            Rabbit young = new Rabbit(false, field, loc);
-            newRabbits.add(young);
+            Squirrel young = new Squirrel(false, field, loc);
+            newSquirrel.add(young);
         }
     }
         
@@ -115,8 +113,8 @@ public class Rabbit extends Animal
     }
 
     /**
-     * A rabbit can breed if it has reached the breeding age.
-     * @return true if the rabbit can breed, false otherwise.
+     * A squirrel can breed if it has reached the breeding age.
+     * @return true if the squirrel can breed, false otherwise.
      */
     private boolean canBreed()
     {
