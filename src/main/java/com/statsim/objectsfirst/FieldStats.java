@@ -105,6 +105,7 @@ public class FieldStats
             }
         }
         return nonZero > 1;
+//        return true;
     }
     
     /**

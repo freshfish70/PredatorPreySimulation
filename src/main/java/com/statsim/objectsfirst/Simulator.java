@@ -1,10 +1,7 @@
 package com.statsim.objectsfirst;
 
-import com.opencsv.CSVWriter;
+import com.statsim.predatorprey.DEBUG;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
@@ -22,13 +19,16 @@ public class Simulator
 {
     // Constants representing configuration information for the simulation.
     // The default width for the grid.
-    private static final int DEFAULT_WIDTH = 100;
+    private static final int DEFAULT_WIDTH = 200;
     // The default depth of the grid.
-    private static final int DEFAULT_DEPTH = 100;
+    private static final int DEFAULT_DEPTH = 200;
     // The probability that a hawk will be created in any given grid position.
-    private static final double HAWK_CREATION_PROBABILITY = 0.02;
+    private static final double HAWK_CREATION_PROBABILITY = 0.001;
     // The probability that a squirrel will be created in any given grid position.
-    private static final double SQUIRREL_CREATION_PROBABILITY = 0.08;
+    private static final double SQUIRREL_CREATION_PROBABILITY = 0.5;
+
+    // Time before animal resets
+    public static final int CYCLE_LENGTH = 365;
 
     // List of animals in the field.
     private List<Animal> animals;
@@ -36,6 +36,8 @@ public class Simulator
     private Field field;
     // The current step of the simulation.
     private int step;
+    // The current step of the simulation.
+    private int localStep;
     // A graphical view of the simulation.
     private SimulatorView view;
     
@@ -91,8 +93,10 @@ public class Simulator
     {
         for(int step = 1; step <= numSteps && view.isViable(field); step++) {
             simulateOneStep();
-//             delay(60);   // uncomment this to run more slowly
+//             delay(50);   // uncomment this to run more slowly
         }
+
+
     }
     
     /**
@@ -103,12 +107,15 @@ public class Simulator
     public void simulateOneStep()
     {
         step++;
+//        calculateCurrentLocalStep();
 
         // Provide space for newborn animals.
         List<Animal> newAnimals = new ArrayList<>();        
         // Let all squirrels act.
         for(Iterator<Animal> it = animals.iterator(); it.hasNext(); ) {
             Animal animal = it.next();
+            animal.setTick(step);
+            if (this.localStep % CYCLE_LENGTH == 0) animal.newYear();
             animal.act(newAnimals);
             if(! animal.isAlive()) {
                 it.remove();
@@ -120,6 +127,14 @@ public class Simulator
 
         view.showStatus(step, field);
     }
+//
+//    private void calculateCurrentLocalStep(){
+//        if (this.step % CYCLE_LENGTH == 0){
+//            this.localStep = 1;
+//        }else{
+//            localStep++;
+//        }
+//    }
         
     /**
      * Reset the simulation to a starting position.
@@ -145,13 +160,14 @@ public class Simulator
             for(int col = 0; col < field.getWidth(); col++) {
                 if(rand.nextDouble() <= HAWK_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
-                    Hawk hawk = new Hawk(false, field, location);
+                    Hawk hawk = new Hawk(true, field, location, this.step);
                     animals.add(hawk);
-                }
-                else if(rand.nextDouble() <= SQUIRREL_CREATION_PROBABILITY) {
+                    DEBUG.HW_START++;
+                }else if(rand.nextDouble() <= SQUIRREL_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
-                    Squirrel squirrel = new Squirrel(false, field, location);
+                    Squirrel squirrel = new Squirrel(true, field, location, this.step);
                     animals.add(squirrel);
+                    DEBUG.SQ_START++;
                 }
                 // else leave the location empty.
             }

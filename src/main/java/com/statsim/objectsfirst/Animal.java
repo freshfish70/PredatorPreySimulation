@@ -15,6 +15,17 @@ public abstract class Animal
     private Field field;
     // The animal's position in the field.
     private Location location;
+    // Counter of how many times an animals has bred
+    private int breedCount = 0;
+
+    private int tickBorn = 0;
+
+    private int ticks = 1;
+
+    private boolean isBreedable = false;
+
+    private int age = 0;
+
     
     /**
      * Create a new animal at location in field.
@@ -22,13 +33,99 @@ public abstract class Animal
      * @param field The field currently occupied.
      * @param location The location within the field.
      */
-    public Animal(Field field, Location location)
+    public Animal(Field field, Location location, int tickBorn)
     {
         alive = true;
         this.field = field;
         setLocation(location);
+        this.tickBorn = tickBorn%Simulator.CYCLE_LENGTH;
     }
-    
+
+    /**
+     * Increment the bred counter to zero
+     */
+    protected void incrementBreedCount(){
+        this.breedCount++;
+    }
+
+    /**
+     * Resets the bred counter for an animal
+     */
+    protected void resetBreedCount(){
+        this.breedCount = 0;
+    }
+
+    /**
+     * Returns how many times an animal has bred
+     * @return times an animal has bred
+     */
+    protected int getBreedCount(){
+        return this.breedCount;
+    }
+
+    /**
+     * Sets the can breed flag for the animal
+     * @param breed true if can breed else false
+     */
+    protected void setCanBreed(boolean breed){
+        this.isBreedable = breed;
+    }
+
+    /**
+     * Returns true of the animal ca breed else false
+     * @return true if can breed else false
+     */
+    protected boolean getCanBreed(){
+        return this.isBreedable;
+    }
+
+    /**
+     * Returns the tick when the animal was born
+     * @return tick the animal was born
+     */
+    protected int getTickBorn(){
+        return this.tickBorn;
+    }
+
+
+    /**
+     * Sets the current simulator tick value
+     * @param tick the current simulator tick
+     */
+    public void setTick(int tick){
+        this.ticks = tick;
+    }
+
+    /**
+     * Returns the current tick
+     * @return current tick
+     */
+    protected int getCurrentTick(){
+        return this.ticks;
+    }
+
+    protected void setAge(int age){
+        this.age = age;
+    }
+    protected void incrementAge(){
+        this.age++;
+    }
+
+    protected void haveBirthday(){
+        if (tickBorn == this.ticks % Simulator.CYCLE_LENGTH) this.incrementAge();
+    }
+
+    protected int getAge(){
+        return this.age;
+    }
+
+    public abstract void newYear();
+
+    /**
+     * Check if the animal is old enough to breed
+     */
+    protected abstract void isOldEnoughToBreed();
+
     /**
      * Make this animal act - that is: make it do
      * whatever it wants/needs to do.

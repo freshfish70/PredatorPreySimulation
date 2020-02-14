@@ -132,6 +132,24 @@ public class Field
         }
         return free;
     }
+
+
+    /**
+     * Get a shuffled list of the free adjacent locations.
+     * @param location Get locations adjacent to this.
+     * @return A list of free adjacent locations.
+     */
+    public List<Location> getDoubleFreeAdjacentLocations(Location location)
+    {
+        List<Location> free = new LinkedList<>();
+        List<Location> adjacent = doubleAdjacentLocations(location);
+        for(Location next : adjacent) {
+            if(getObjectAt(next) == null) {
+                free.add(next);
+            }
+        }
+        return free;
+    }
     
     /**
      * Try to find a free location that is adjacent to the
@@ -145,6 +163,24 @@ public class Field
     {
         // The available free ones.
         List<Location> free = getFreeAdjacentLocations(location);
+        if(free.size() > 0) {
+            return free.get(0);
+        }
+        else {
+            return null;
+        }
+    }    /**
+     * Try to find a free location that is adjacent to the
+     * given location. If there is none, return null.
+     * The returned location will be within the valid bounds
+     * of the field.
+     * @param location The location from which to generate an adjacency.
+     * @return A valid location within the grid area.
+     */
+    public Location doubleFreeAdjacentLocation(Location location)
+    {
+        // The available free ones.
+        List<Location> free = getDoubleFreeAdjacentLocations(location);
         if(free.size() > 0) {
             return free.get(0);
         }
@@ -181,6 +217,41 @@ public class Field
                 }
             }
             
+            // Shuffle the list. Several other methods rely on the list
+            // being in a random order.
+            Collections.shuffle(locations, rand);
+        }
+        return locations;
+    }
+
+    /**
+     * Return a shuffled list of locations adjacent to the given one.
+     * The list will not include the location itself.
+     * All locations will lie within the grid.
+     * @param location The location from which to generate adjacencies.
+     * @return A list of locations adjacent to that given.
+     */
+    public List<Location> doubleAdjacentLocations(Location location)
+    {
+        assert location != null : "Null location passed to adjacentLocations";
+        // The list of locations to be returned.
+        List<Location> locations = new LinkedList<>();
+        if(location != null) {
+            int row = location.getRow();
+            int col = location.getCol();
+            for(int roffset = -2; roffset <= 2; roffset++) {
+                int nextRow = row + roffset;
+                if(nextRow >= 0 && nextRow < depth) {
+                    for(int coffset = -2; coffset <= 2; coffset++) {
+                        int nextCol = col + coffset;
+                        // Exclude invalid locations and the original location.
+                        if(nextCol >= 0 && nextCol < width && (roffset != 0 || coffset != 0)) {
+                            locations.add(new Location(nextRow, nextCol));
+                        }
+                    }
+                }
+            }
+
             // Shuffle the list. Several other methods rely on the list
             // being in a random order.
             Collections.shuffle(locations, rand);

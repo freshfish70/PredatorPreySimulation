@@ -1,5 +1,8 @@
 package com.statsim.objectsfirst;
 
+import com.statsim.predatorprey.DEBUG;
+
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -15,18 +18,31 @@ public class Squirrel extends Animal
     // The age at which a squirrel can start to breed.
     private static final int BREEDING_AGE = 1;
     // The age to which a squirrel can live.
-    private static final int MAX_AGE = 40;
+    private static final int MAX_AGE = 3;
     // The likelihood of a squirrel breeding.
-    private static final double BREEDING_PROBABILITY = 0.12;
+    private static final double BREEDING_PROBABILITY = 0.4;
+
+    private static final int MIN_DIE_AGE = 2;
+
+    private static final double DIE_BEFORE_MAX_AGE_PROBABILITY = 0.01;
+
+    private static final double FIND_PINECONE_PROBABILITY = 0.8;
+
+    private static final int PINECONE_FOOD_VALUE = 5;
+
+    private static final int BREED_PERIOD_TIME = 7;
+
+    private static final int MAX_BREED_COUNT = 2;
+
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 7;
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
-    
+
     // Individual characteristics (instance fields).
-    
-    // The squirrel's age.
-    private int age;
+    private int foodLevel;
+
+    private int breedPeriodOffset;
 
     /**
      * Create a new squirrel. A squirrel may be created with age
@@ -36,15 +52,31 @@ public class Squirrel extends Animal
      * @param field The field currently occupied.
      * @param location The location within the field.
      */
-    public Squirrel(boolean randomAge, Field field, Location location)
+    public Squirrel(boolean randomAge, Field field, Location location, int tickBorn)
     {
-        super(field, location);
-        age = 0;
+        super(field, location, tickBorn);
         if(randomAge) {
-            age = rand.nextInt(MAX_AGE);
+            this.setAge(rand.nextInt(MAX_AGE));
+//            foodLevel = rand.nextInt(PINECONE_FOOD_VALUE);
+            foodLevel = PINECONE_FOOD_VALUE;
         }
+        else {
+            this.setAge(0);
+            foodLevel = PINECONE_FOOD_VALUE;
+        }
+        DEBUG.SQ_TOTALSPAWNED++;
     }
-    
+
+    @Override
+    public void newYear() {
+        generateBreedOffset();
+        this.resetBreedCount();
+    }
+
+    private void generateBreedOffset(){
+        this.breedPeriodOffset = (int)Math.floor(Math.random() * 100);
+    }
+
     /**
      * This is what the squirrel does most of the time - it runs
      * around. Sometimes it will breed or die of old age.
@@ -52,72 +84,114 @@ public class Squirrel extends Animal
      */
     public void act(List<Animal> newSquirrel)
     {
-        incrementAge();
+        this.haveBirthday();
+        this.incrementHunger();
+        this.isTooOld();
+        findFood();
         if(isAlive()) {
-            giveBirth(newSquirrel);
             // Try to move into a free location.
             Location newLocation = getField().freeAdjacentLocation(getLocation());
             if(newLocation != null) {
                 setLocation(newLocation);
+                giveBirth(newSquirrel);
             }
             else {
                 // Overcrowding.
                 setDead();
+                DEBUG.SQ_DIE_LOC++;
+
             }
         }
     }
 
     /**
-     * Increase the age.
-     * This could result in the squirrel's death.
+     * Increase the age. This could result in the squirrel's death.
      */
-    private void incrementAge()
+    private void isTooOld()
     {
-        age++;
+        int age = this.getAge();
         if(age > MAX_AGE) {
             setDead();
+            DEBUG.SQ_DIE_AGE++;
+        }else if (age >= MIN_DIE_AGE){
+            if (Math.random() <= DIE_BEFORE_MAX_AGE_PROBABILITY) {
+                setDead();
+                DEBUG.SQ_DIE_AGE++;
+            }
         }
     }
-    
+
+    /**
+     * Make this squirrel more hungry. This could result in the squirrel's death.
+     */
+    private void incrementHunger()
+    {
+        foodLevel--;
+        if(foodLevel <= 0) {
+            setDead();
+            DEBUG.SQ_STARVATION++;
+
+        }
+    }
+
+    /**
+     * Look for squirrels adjacent to the current location.
+     * Only the first live squirrel is eaten.
+     * @return Where food was found, or null if it wasn't.
+     */
+    private void findFood()
+    {
+        if (Math.random() <= FIND_PINECONE_PROBABILITY) foodLevel = PINECONE_FOOD_VALUE;
+    }
+
     /**
      * Check whether or not this squirrel is to give birth at this step.
      * New births will be made into free adjacent locations.
-     * @param newSquirrel A list to return newly born squirrels.
+     *
+     * @param newSquirrels A list to return newly born squirreles.
      */
-    private void giveBirth(List<Animal> newSquirrel)
-    {
-        // New squirrel are born into adjacent locations.
-        // Get a list of adjacent free locations.
-        Field field = getField();
-        List<Location> free = field.getFreeAdjacentLocations(getLocation());
-        int births = breed();
-        for(int b = 0; b < births && free.size() > 0; b++) {
-            Location loc = free.remove(0);
-            Squirrel young = new Squirrel(false, field, loc);
-            newSquirrel.add(young);
+    private void giveBirth(List<Animal> newSquirrels) {
+        boolean canBreed = this.getCanBreed();
+        if (canBreed && isOnBreedingPeriod()) {
+            // New squirreles are born into adjacent locations.
+            // Get a list of adjacent free locations.
+            Field field = getField();
+            List<Location> free = field.getFreeAdjacentLocations(getLocation());
+            int births = breed();
+            for (int b = 0; b < births && free.size() > 0; b++) {
+                Location loc = free.remove(0);
+                Squirrel young = new Squirrel(false, field, loc, this.getCurrentTick());
+                newSquirrels.add(young);
+            }
+
+        } else if (!canBreed) {
+            isOldEnoughToBreed();
         }
     }
-        
+
+    private boolean isOnBreedingPeriod() {
+        return (this.getCurrentTick() + this.breedPeriodOffset) % Math.ceil(Simulator.CYCLE_LENGTH / MAX_BREED_COUNT) < BREED_PERIOD_TIME;
+    }
+
     /**
      * Generate a number representing the number of births,
      * if it can breed.
+     *
      * @return The number of births (may be zero).
      */
-    private int breed()
-    {
+    private int breed() {
         int births = 0;
-        if(canBreed() && rand.nextDouble() <= BREEDING_PROBABILITY) {
+        if (this.getCanBreed() && rand.nextDouble() <= BREEDING_PROBABILITY) {
             births = rand.nextInt(MAX_LITTER_SIZE) + 1;
         }
         return births;
     }
 
-    /**
-     * A squirrel can breed if it has reached the breeding age.
-     * @return true if the squirrel can breed, false otherwise.
-     */
-    private boolean canBreed()
-    {
-        return age >= BREEDING_AGE;
+    @Override
+    protected void isOldEnoughToBreed() {
+        boolean canBreed = this.getAge() >= BREEDING_AGE;
+        if (canBreed) {
+            this.setCanBreed(true);
+        }
     }
 }
