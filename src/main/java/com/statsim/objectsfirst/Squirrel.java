@@ -26,7 +26,7 @@ public class Squirrel extends Animal
 
     private static final double DIE_BEFORE_MAX_AGE_PROBABILITY = 0.01;
 
-    private static final double FIND_PINECONE_PROBABILITY = 0.8;
+    private static final double FIND_PINECONE_PROBABILITY = 0.7;
 
     private static final int PINECONE_FOOD_VALUE = 5;
 
