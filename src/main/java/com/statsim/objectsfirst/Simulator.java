@@ -23,9 +23,11 @@ public class Simulator {
     // The default depth of the grid.
     private static final int DEFAULT_DEPTH = 200;
     // The probability that a hawk will be created in any given grid position.
-    private static final double HAWK_CREATION_PROBABILITY = 0.001;
+    //0.001
+    private static final double HAWK_CREATION_PROBABILITY = 0.0015;
     // The probability that a squirrel will be created in any given grid position.
-    private static final double SQUIRREL_CREATION_PROBABILITY = 0.2;
+    //0.2
+    private static final double SQUIRREL_CREATION_PROBABILITY = 0.35;
 
     // Time before animal resets
     public static final int CYCLE_LENGTH = 365;
