@@ -20,7 +20,7 @@ public class Squirrel extends Animal
     // The age to which a squirrel can live.
     private static final int MAX_AGE = 3;
     // The likelihood of a squirrel breeding.
-    private static final double BREEDING_PROBABILITY = 0.2;
+    private static final double BREEDING_PROBABILITY = 0.01;
 
     private static final int MIN_DIE_AGE = 2;
 
@@ -55,10 +55,10 @@ public class Squirrel extends Animal
     public Squirrel(boolean randomAge, Field field, Location location, int tickBorn)
     {
         super(field, location, tickBorn);
+        this.setAnimalType(AnimalType.SQUIRREL);
         if(randomAge) {
             this.setAge(rand.nextInt(MAX_AGE));
-//            foodLevel = rand.nextInt(PINECONE_FOOD_VALUE);
-            foodLevel = PINECONE_FOOD_VALUE;
+            foodLevel = rand.nextInt(PINECONE_FOOD_VALUE)+1;
         }
         else {
             this.setAge(0);
@@ -89,15 +89,14 @@ public class Squirrel extends Animal
         this.isTooOld();
         findFood();
         if(isAlive()) {
-            // Try to move into a free location.
             Location newLocation = getField().freeAdjacentLocation(getLocation());
             if(newLocation != null) {
                 setLocation(newLocation);
                 giveBirth(newSquirrel);
             }
             else {
-                // Overcrowding.
                 setDead();
+                this.setDeathCause(DeathCause.OVERCROWD);
                 DEBUG.SQ_DIE_LOC++;
 
             }
@@ -112,10 +111,12 @@ public class Squirrel extends Animal
         int age = this.getAge();
         if(age > MAX_AGE) {
             setDead();
+            this.setDeathCause(DeathCause.AGE);
             DEBUG.SQ_DIE_AGE++;
         }else if (age >= MIN_DIE_AGE){
             if (Math.random() <= DIE_BEFORE_MAX_AGE_PROBABILITY) {
                 setDead();
+                this.setDeathCause(DeathCause.AGE);
                 DEBUG.SQ_DIE_AGE++;
             }
         }
@@ -129,6 +130,7 @@ public class Squirrel extends Animal
         foodLevel--;
         if(foodLevel <= 0) {
             setDead();
+            this.setDeathCause(DeathCause.HUNGER);
             DEBUG.SQ_STARVATION++;
 
         }

@@ -26,23 +26,7 @@ Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
         System.out.println("HW DIE LOC: " + DEBUG.HW_DIE_LOC);
     }
 }));
-        String[] header = {"test", "test2"};
-        try {
-            CsvLogger e = new CsvLogger("./file.csv", header);
-            String[] aw = {"ewer", "ewrwer", "ewrwer"};
-            String[] aw2 = {"ewer", "ewrwer"};
-            e.log(aw);
-            e.log(aw2);
-            e.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     Simulator simulator = new Simulator();
     simulator.simulate(7500);
-
-
-
-//        System.exit(1);
     }
 }

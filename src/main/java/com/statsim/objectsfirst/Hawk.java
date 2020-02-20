@@ -26,7 +26,7 @@ public class Hawk extends Animal {
     private static final double DIE_BEFORE_MAX_AGE_PROBABILITY = 0.05;
 
     // The likelihood of a hawk breeding.
-    private static final double BREEDING_PROBABILITY = 0.005;
+    private static final double BREEDING_PROBABILITY = 0.01;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 3;
     // The food value of a single squirrel. In effect, this is the
@@ -36,10 +36,10 @@ public class Hawk extends Animal {
     private static final Random rand = Randomizer.getRandom();
 
     // Tick at which the hawk can breed at
-    private static final int BREED_PERIOD_START = 95;
+    private static final int BREED_PERIOD_START = 90;
 
     //Tick at which the hack can no longer breed
-    private static final int BREED_PERIOD_END = 145;
+    private static final int BREED_PERIOD_END = 140;
 
     // The hawk's food level, which is increased by eating squirrels.
     private int foodLevel;
@@ -55,6 +55,7 @@ public class Hawk extends Animal {
      */
     public Hawk(boolean randomAge, Field field, Location location, int tickBorn) {
         super(field, location, tickBorn);
+        this.setAnimalType(AnimalType.HAWK);
         if (randomAge) {
             this.setAge(rand.nextInt(MAX_AGE));
             foodLevel = rand.nextInt(SQUIRREL_FOOD_VALUE);
@@ -96,6 +97,7 @@ public class Hawk extends Animal {
             } else {
                 // Overcrowding.
                 setDead();
+                this.setDeathCause(DeathCause.OVERCROWD);
                 DEBUG.HW_DIE_LOC++;
 
             }
@@ -109,10 +111,12 @@ public class Hawk extends Animal {
         int age = this.getAge();
         if (age > MAX_AGE) {
             setDead();
+            this.setDeathCause(DeathCause.AGE);
             DEBUG.HW_DIE_AGE++;
         } else if (age >= MIN_DIE_AGE) {
             if (Math.random() <= DIE_BEFORE_MAX_AGE_PROBABILITY) {
                 setDead();
+                this.setDeathCause(DeathCause.AGE);
                 DEBUG.HW_DIE_AGE++;
             }
         }
@@ -125,6 +129,7 @@ public class Hawk extends Animal {
         foodLevel--;
         if (foodLevel <= 0) {
             setDead();
+            this.setDeathCause(DeathCause.HUNGER);
             DEBUG.HW_STARVATION++;
         }
     }
@@ -136,7 +141,6 @@ public class Hawk extends Animal {
      * @return Where food was found, or null if it wasn't.
      */
     private Location findFood() {
-//        if (this.foodLevel > 6) return null;
         Field field = getField();
         List<Location> adjacent = field.doubleAdjacentLocations(getLocation());
         Iterator<Location> it = adjacent.iterator();
@@ -146,7 +150,7 @@ public class Hawk extends Animal {
             if (animal instanceof Squirrel) {
                 Squirrel squirrel = (Squirrel) animal;
                 if (squirrel.isAlive()) {
-                    squirrel.setDead();
+                    squirrel.setDead(true);
                     foodLevel = SQUIRREL_FOOD_VALUE;
                     return where;
                 }
