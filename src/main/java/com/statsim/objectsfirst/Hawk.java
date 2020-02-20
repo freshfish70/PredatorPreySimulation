@@ -23,23 +23,23 @@ public class Hawk extends Animal {
     // The age to which the hawk can die from
     private static final int MIN_DIE_AGE = 9;
 
-    private static final double DIE_BEFORE_MAX_AGE_PROBABILITY = 0.01;
+    private static final double DIE_BEFORE_MAX_AGE_PROBABILITY = 0.05;
 
     // The likelihood of a hawk breeding.
-    private static final double BREEDING_PROBABILITY = 0.08;
+    private static final double BREEDING_PROBABILITY = 0.005;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 3;
     // The food value of a single squirrel. In effect, this is the
     // number of steps a hawk can go before it has to eat again.
-    private static final int SQUIRREL_FOOD_VALUE = 7;
+    private static final int SQUIRREL_FOOD_VALUE = 8;
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
 
     // Tick at which the hawk can breed at
-    private static final int BREED_PERIOD_START = 90;
+    private static final int BREED_PERIOD_START = 95;
 
     //Tick at which the hack can no longer breed
-    private static final int BREED_PERIOD_END = 150;
+    private static final int BREED_PERIOD_END = 145;
 
     // The hawk's food level, which is increased by eating squirrels.
     private int foodLevel;
@@ -88,7 +88,7 @@ public class Hawk extends Animal {
             Location newLocation = findFood();
             if (newLocation == null) {
                 // No food found - try to move to a free location.
-                newLocation = getField().freeAdjacentLocation(getLocation());
+                newLocation = getField().doubleFreeAdjacentLocation(getLocation());
             }
             // See if it was possible to move.
             if (newLocation != null) {
@@ -136,8 +136,9 @@ public class Hawk extends Animal {
      * @return Where food was found, or null if it wasn't.
      */
     private Location findFood() {
+//        if (this.foodLevel > 6) return null;
         Field field = getField();
-        List<Location> adjacent = field.adjacentLocations(getLocation());
+        List<Location> adjacent = field.doubleAdjacentLocations(getLocation());
         Iterator<Location> it = adjacent.iterator();
         while (it.hasNext()) {
             Location where = it.next();
@@ -192,11 +193,12 @@ public class Hawk extends Animal {
     private int breed() {
         int births = 0;
         if (this.getCanBreed() && rand.nextDouble() <= BREEDING_PROBABILITY) {
-            births = rand.nextInt(MAX_LITTER_SIZE) + 1;
-            if (births > MAX_LITTER_SIZE){
-                System.out.println("TOOOO MAAAAAANNYYYYY\n\n\n");
+            births = rand.nextInt(MAX_LITTER_SIZE);
+            if (births == 0) {
+                births = Math.round((float)Math.random());
+            } else {
+                births += 1;
             }
-
         }
         return births;
     }

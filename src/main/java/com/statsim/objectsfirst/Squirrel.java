@@ -20,7 +20,7 @@ public class Squirrel extends Animal
     // The age to which a squirrel can live.
     private static final int MAX_AGE = 3;
     // The likelihood of a squirrel breeding.
-    private static final double BREEDING_PROBABILITY = 0.4;
+    private static final double BREEDING_PROBABILITY = 0.2;
 
     private static final int MIN_DIE_AGE = 2;
 
@@ -35,7 +35,7 @@ public class Squirrel extends Animal
     private static final int MAX_BREED_COUNT = 2;
 
     // The maximum number of births.
-    private static final int MAX_LITTER_SIZE = 7;
+    private static final int MAX_LITTER_SIZE = 5;
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
 
@@ -182,7 +182,12 @@ public class Squirrel extends Animal
     private int breed() {
         int births = 0;
         if (this.getCanBreed() && rand.nextDouble() <= BREEDING_PROBABILITY) {
-            births = rand.nextInt(MAX_LITTER_SIZE) + 1;
+            births = rand.nextInt(MAX_LITTER_SIZE);
+            if (births == 0) {
+                births = Math.round((float)Math.random());
+            } else {
+                births += 1;
+            }
         }
         return births;
     }

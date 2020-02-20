@@ -25,7 +25,7 @@ public class Simulator
     // The probability that a hawk will be created in any given grid position.
     private static final double HAWK_CREATION_PROBABILITY = 0.001;
     // The probability that a squirrel will be created in any given grid position.
-    private static final double SQUIRREL_CREATION_PROBABILITY = 0.5;
+    private static final double SQUIRREL_CREATION_PROBABILITY = 0.2;
 
     // Time before animal resets
     public static final int CYCLE_LENGTH = 365;
