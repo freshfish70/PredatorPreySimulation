@@ -20,7 +20,7 @@ public class Squirrel extends Animal
     // The age to which a squirrel can live.
     private static final int MAX_AGE = 3;
     // The likelihood of a squirrel breeding.
-    private static final double BREEDING_PROBABILITY = 0.13;
+    private static final double BREEDING_PROBABILITY = 0.10;
 
     private static final int MIN_DIE_AGE = 2;
 

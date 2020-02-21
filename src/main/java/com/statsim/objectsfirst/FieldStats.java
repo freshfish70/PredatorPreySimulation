@@ -111,7 +111,7 @@ public class FieldStats
                 nonZero++;
             }
         }
-        return nonZero >= 1;
+        return nonZero > 1;
 //        return true;
     }
     
