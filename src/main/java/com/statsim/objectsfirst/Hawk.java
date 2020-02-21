@@ -23,15 +23,15 @@ public class Hawk extends Animal {
     // The age to which the hawk can die from
     private static final int MIN_DIE_AGE = 9;
 
-    private static final double DIE_BEFORE_MAX_AGE_PROBABILITY = 0.05;
+    private static final double DIE_BEFORE_MAX_AGE_PROBABILITY = 0.06;
 
     // The likelihood of a hawk breeding.
-    private static final double BREEDING_PROBABILITY = 0.012;
+    private static final double BREEDING_PROBABILITY = 0.005;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 3;
     // The food value of a single squirrel. In effect, this is the
     // number of steps a hawk can go before it has to eat again.
-    private static final int SQUIRREL_FOOD_VALUE = 9;
+    private static final int SQUIRREL_FOOD_VALUE = 7;
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
 
