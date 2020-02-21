@@ -31,7 +31,7 @@ public class Hawk extends Animal {
     private static final int MAX_LITTER_SIZE = 3;
     // The food value of a single squirrel. In effect, this is the
     // number of steps a hawk can go before it has to eat again.
-    private static final int SQUIRREL_FOOD_VALUE = 10;
+    private static final int SQUIRREL_FOOD_VALUE = 9;
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
 
@@ -197,12 +197,7 @@ public class Hawk extends Animal {
     private int breed() {
         int births = 0;
         if (this.getCanBreed() && rand.nextDouble() <= BREEDING_PROBABILITY) {
-            births = rand.nextInt(MAX_LITTER_SIZE);
-            if (births == 0) {
-                births = Math.round((float)Math.random());
-            } else {
-                births += 1;
-            }
+            births = rand.nextInt(MAX_LITTER_SIZE) + 1 ;
         }
         return births;
     }
