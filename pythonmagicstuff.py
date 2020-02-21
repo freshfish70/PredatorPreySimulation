@@ -26,6 +26,7 @@ alls_squirrel = pd.read_csv("./all-survive2/squirrel.csv")
 
 print("hawk dies mean and avg")
 for x in [hawkdies_hawk,hawkdies_squirrel]:
+    print(f"animal {x.__name__}")
     print(f"Age std: {x['Age'].std()}")
     print(f"Age avg: {x['Age'].mean()}")
 
