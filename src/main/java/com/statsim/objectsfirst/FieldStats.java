@@ -1,5 +1,7 @@
 package com.statsim.objectsfirst;
 
+import com.statsim.predatorprey.DEBUG;
+
 import java.awt.Color;
 import java.util.HashMap;
 
@@ -45,6 +47,11 @@ public class FieldStats
             buffer.append(": ");
             buffer.append(info.getCount());
             buffer.append(' ');
+            if (info.getName().contains("Squirrel")){
+                DEBUG.SQ_POPULATION = info.getCount();
+            }else{
+                DEBUG.HW_POPULATION = info.getCount();
+            }
         }
         return buffer.toString();
     }

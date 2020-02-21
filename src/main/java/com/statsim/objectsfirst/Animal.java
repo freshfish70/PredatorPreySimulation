@@ -109,6 +109,15 @@ public abstract class Animal {
         return this.tickBorn;
     }
 
+    /**
+     * Returns number of ticks alive
+     *
+     * @return number of ticks alive
+     */
+    protected int getTickAge() {
+        return this.ticks - this.tickBorn;
+    }
+
 
     /**
      * Sets the current simulator tick value

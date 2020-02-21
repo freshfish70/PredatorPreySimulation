@@ -43,7 +43,9 @@ public class Simulator {
     // A graphical view of the simulation.
     private SimulatorView view;
 
-    CsvLogger logger;
+    CsvLogger populationLogger;
+    CsvLogger hawkLogger;
+    CsvLogger squirrelLogger;
 
     /**
      * Construct a simulation field with default size.
@@ -59,9 +61,16 @@ public class Simulator {
      * @param width Width of the field. Must be greater than zero.
      */
     public Simulator(int depth, int width) {
-        String[] header = {"Animal", "Age", "Time of death", "Death cause", "Total population"};
         try {
-            logger = new CsvLogger("./log-" + LocalDateTime.now().toString() + ".csv", header);
+            String timestamp = LocalDateTime.now().toString();
+
+            String[] populationHeader = {"SQUIRREL", "HAWK"};
+            populationLogger = new CsvLogger("./population-log-" + timestamp + ".csv", populationHeader);
+
+            String[] animalHeader = {"Age", "Time of death", "Cause of death", "Age years"};
+            hawkLogger = new CsvLogger("./hawk-log-" + timestamp + ".csv", animalHeader);
+            squirrelLogger = new CsvLogger("./squirrel-log-" + timestamp + ".csv", animalHeader);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -106,7 +115,9 @@ public class Simulator {
 //            delay(60);   // uncomment this to run more slowly
         }
         try {
-            logger.close();
+            populationLogger.close();
+            squirrelLogger.close();
+            hawkLogger.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -129,16 +140,24 @@ public class Simulator {
             if (this.localStep % CYCLE_LENGTH == 0) animal.newYear();
             animal.act(newAnimals);
             if (!animal.isAlive()) {
-                String[] log = {animal.getAnimalType().toString(), "" + animal.getAge(), "" + this.step, animal.getDeathCouse().toString(), "" + animals.size()};
-                logger.log(log);
+                String[] animalLog = {"" + animal.getTickAge(), "" + this.step, animal.getDeathCouse().toString(), ""+animal.getAge()};
+                if (animal.getAnimalType().toString().equalsIgnoreCase(AnimalType.HAWK.toString())) {
+                    hawkLogger.log(animalLog);
+                } else {
+                    squirrelLogger.log(animalLog);
+                }
                 it.remove();
             }
         }
+
 
         // Add the newly born hawks and squirrels to the main lists.
         animals.addAll(newAnimals);
 
         view.showStatus(step, field);
+
+        String[] log = {"" + DEBUG.SQ_POPULATION, "" + DEBUG.HW_POPULATION};
+        populationLogger.log(log);
     }
 
     /**
