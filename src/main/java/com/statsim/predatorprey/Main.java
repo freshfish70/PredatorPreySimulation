@@ -29,6 +29,6 @@ Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
     }
 }));
     Simulator simulator = new Simulator();
-    simulator.simulate(100);
+    simulator.simulate(7500);
     }
 }

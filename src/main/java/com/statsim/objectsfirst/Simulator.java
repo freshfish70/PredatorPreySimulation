@@ -24,7 +24,7 @@ public class Simulator {
     private static final int DEFAULT_DEPTH = 200;
     // The probability that a hawk will be created in any given grid position.
     //0.001
-    private static final double HAWK_CREATION_PROBABILITY = 0.0015;
+    private static final double HAWK_CREATION_PROBABILITY = 0.0018;
     // The probability that a squirrel will be created in any given grid position.
     //0.2
     private static final double SQUIRREL_CREATION_PROBABILITY = 0.35;
@@ -65,11 +65,11 @@ public class Simulator {
             String timestamp = LocalDateTime.now().toString();
 
             String[] populationHeader = {"SQUIRREL", "HAWK"};
-            populationLogger = new CsvLogger("./population-log-" + timestamp + ".csv", populationHeader);
+            populationLogger = new CsvLogger("./01A-population-log-" + timestamp + ".csv", populationHeader);
 
             String[] animalHeader = {"Age", "Time of death", "Cause of death", "Age years"};
-            hawkLogger = new CsvLogger("./hawk-log-" + timestamp + ".csv", animalHeader);
-            squirrelLogger = new CsvLogger("./squirrel-log-" + timestamp + ".csv", animalHeader);
+            hawkLogger = new CsvLogger("./01A-hawk-log-" + timestamp + ".csv", animalHeader);
+            squirrelLogger = new CsvLogger("./01A-squirrel-log-" + timestamp + ".csv", animalHeader);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -112,7 +112,7 @@ public class Simulator {
     public void simulate(int numSteps) {
         for (int step = 1; step <= numSteps && view.isViable(field); step++) {
             simulateOneStep();
-//            delay(60);   // uncomment this to run more slowly
+            delay(10);   // uncomment this to run more slowly
         }
         try {
             populationLogger.close();
