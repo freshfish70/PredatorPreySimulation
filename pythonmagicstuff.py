@@ -1,7 +1,19 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
-df = pd.read_csv("/home/trygve/Documents/github/PredatorPreySimulation/Alle_dør.csv")
+df = pd.read_csv("/home/trygve/Documents/github/PredatorPreySimulation/all-survive/01A-hawk-log-2020-02-21T11:01:01.566.csv")
 # /home/trygve/Documents/github/PredatorPreySimulation/Alle_dør .csv
-print(df["Age"].std())
-hawk_df = df.filter(like='HAWK', axis=0)
+print(f"Age std: {df['Age'].std()}")
+print(f"Age avg: {df['Age'].mean()}")
+#hawk_df = df.filter(like='', axis=0)
+
+ 
+df2 = pd.read_csv("/home/trygve/Documents/github/PredatorPreySimulation/all-survive/01A-population-log-2020-02-21T11:01:01.566.csv")
+df2.cumsum()
+
+#plt.figure()
+print(df2)
+df2.plot()
+
+plt.show()
