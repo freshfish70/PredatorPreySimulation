@@ -18,15 +18,17 @@ Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
         System.out.println("SQ STARVATION: " + DEBUG.SQ_STARVATION);
         System.out.println("SQ DIE AGE: " + DEBUG.SQ_DIE_AGE);
         System.out.println("SQ DIE LOC: " + DEBUG.SQ_DIE_LOC);
+        System.out.println("SQ POPULATION: " + DEBUG.SQ_POPULATION);
         System.out.println("---------------------------------------");
         System.out.println("HW START: " + DEBUG.HW_START);
         System.out.println("HW TOTAL: " + DEBUG.HW_TOTALSPAWNED);
         System.out.println("HW STARVATION: " + DEBUG.HW_STARVATION);
         System.out.println("HW DIE AGE: " + DEBUG.HW_DIE_AGE);
         System.out.println("HW DIE LOC: " + DEBUG.HW_DIE_LOC);
+        System.out.println("HW POPULATION: " + DEBUG.HW_POPULATION);
     }
 }));
     Simulator simulator = new Simulator();
-    simulator.simulate(7500);
+    simulator.simulate(100);
     }
 }
