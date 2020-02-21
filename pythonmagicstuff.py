@@ -14,6 +14,7 @@ df2.cumsum()
 
 #plt.figure()
 print(df2)
-df2.plot()
-
+df2["idx"] = range(len(df2))
+ax=df2.plot("idx", "SQUIRREL")
+df2.plot("idx", "HAWK",secondary_y=True, ax=ax)
 plt.show()
